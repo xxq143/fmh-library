@@ -1,0 +1,20 @@
+{
+  "name": "fmh",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/fmh-bc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack"
+  },
+  "keywords": [
+    "canvas",
+    "draw"
+  ],
+  "author": "fanjie",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  }
+}

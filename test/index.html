@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>library</title>
+    <style>
+        body {
+            margin: 0;
+            box-sizing: border-box;
+            width: 100vw;
+            height: 100vh;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+<div class="canvas">
+    <!--    <canvas id="cv" style="border: 1px solid red;"></canvas>-->
+</div>
+<script src="../dist/fmh-bc.js"></script>
+<script>
+
+	let {Root, Layer, Group, Rect, Circle, Line, Img, utils} = fmhBC.fmh;
+	// let r = new Root()
+	// let l = new Layer()
+	// let l2 = new Layer()
+	// let g = new Group()
+	// let list = []
+	// let layerList = []
+	//
+	// function loadImage () {
+	// 	return new Promise((resolve, reject) => {
+	// 		let list = []
+	// 		for (let i = 0; i < 8; i++) {
+	// 			list.push(utils.loadImage(`./furr_walking_monster/gothit/skeleton-got_hit_${i}.png`))
+	// 		}
+	// 		Promise.all(list).then(res => {
+	// 			let size = 50;
+	// 			let result = res.map((img, index) => {
+	// 				return {
+	// 					image: img,
+	// 					x: index * size,
+	// 					y: 0,
+	// 					width: size,
+	// 					height: size,
+	// 				}
+	// 			})
+	// 			resolve(result)
+	// 		}).catch(err => {
+	// 			reject(err)
+	// 		})
+	// 	})
+	// }
+	//
+	// loadImage().then(res => {
+	// 	res.forEach(item => {
+	// 		let img = new Img(item)
+	// 		l.add(img)
+	// 		img.start(() => {
+	// 			img.x++
+	// 		})
+	// 	})
+	// 	l.isDrawLayer = false;
+	// 	r.add(l)
+	// })
+
+	// console.log(utils.generateSpritePicture);
+	let lists = []
+	lists.name = 'gothit'
+	for (let i = 0; i < 8; i++) {
+		lists.push(`./furr_walking_monster/gothit/skeleton-got_hit_${i}.png`)
+	}
+	let lists2 = []
+	lists2.name = 'attack'
+	for (let i = 0; i < 25; i++) {
+		lists2.push(`./furr_walking_monster/attack/skeleton-attack_${i}.png`)
+	}
+	let sprite = [
+		lists,
+		lists2,
+	]
+	utils.generateSpritePicture(sprite).then(res => {
+		document.body.appendChild(res.img)
+	}).catch(err => {
+		console.log(err);
+	})
+</script>
+</body>
+</html>
