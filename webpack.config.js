@@ -7,10 +7,10 @@ module.exports = {
 		filename: 'fmh-bc.js',
 		library: {
 			name: 'fmhBC',
-			type: 'umd'
+			type: 'umd',
 		},
-		clean: true
+		clean: true,
 	},
-	mode: 'development',
-	devtool: 'source-map'
+	mode: 'production',
+	devtool: 'source-map',
 }
