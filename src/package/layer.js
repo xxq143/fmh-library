@@ -27,6 +27,10 @@ export class Layer extends Container {
 		return this.ctx;
 	}
 
+	removeChild (ins) {
+		this.children = this.children.filter(child => child._id !== ins._id)
+	}
+
 	_clear (options = {x: 0, y: 0, width: this.cvWidth, height: this.cvHeight}) {
 		let {x, y, width, height} = options
 		this.ctx.clearRect(x, y, width, height)

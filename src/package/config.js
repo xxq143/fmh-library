@@ -14,5 +14,6 @@ export const globalConfig = {
 	image: null,	// 图片	drawImage
 	nodeType: '',	// 节点类型
 	typeList: [],	// 类型列表，单个属性包含多个类型
+	listeners: {},	// 事件列表
 }
 export default globalConfig

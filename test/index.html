@@ -20,7 +20,9 @@
     </style>
 </head>
 <body>
-<div class="container box"></div>
+<div class="out-box">
+    <div class="container box"></div>
+</div>
 <script src="../dist/fmh-bc.js"></script>
 <script>
 
@@ -79,7 +81,6 @@
 
 	// console.log(utils.generateSpritePicture);
 	let container = document.querySelector('.box')
-	console.log(container)
 	let r = new Root({domEl: container})
 	let l = new Layer()
 	let lists = []
@@ -102,16 +103,89 @@
 		lists2,
 		lists3,
 	]
+	let bugList = [];
+	bugList.name = 'bug';
+	for (let i = 0; i < 15; i++) {
+		bugList.push(`./png/skeleton-animation_${i < 10 ? '0' + i : i}.png`)
+	}
+
 	let input = new Input('all')
+	console.log(bugList)
+	let bug = new Sprite([bugList], input)
+	console.log(bug);
+	let sp = new Sprite(sprite, input)
+	bug.subscribe('ready', (ins) => {
+		ins.changeSpeed('bug', 1000)
+		let speed = 10
+		ins.start(() => {
+			if (ins.input.directive === 'u') {
+				ins.y -= speed
+				resetPosition(ins)
+			} else if (ins.input.directive === 'r') {
+				ins.x += speed
+				resetPosition(ins)
+			} else if (ins.input.directive === 'd') {
+				ins.y += speed
+				resetPosition(ins)
+			} else if (ins.input.directive === 'l') {
+				ins.x -= speed
+				resetPosition(ins)
+			} else if (['ur', 'ru'].includes(ins.input.directive)) {
+				ins.x += speed
+				ins.y -= speed
+				resetPosition(ins)
+			} else if (['ul', 'lu'].includes(ins.input.directive)) {
+				ins.x -= speed
+				ins.y -= speed
+				resetPosition(ins)
+			} else if (['dr', 'rd'].includes(ins.input.directive)) {
+				ins.x += speed
+				ins.y += speed
+				resetPosition(ins)
+			} else if (['dl', 'ld'].includes(ins.input.directive)) {
+				ins.x -= speed
+				ins.y += speed
+				resetPosition(ins)
+			}
+			if (ins.input.otherKeyCode[0] === 65) {
+				if (Math.floor(ins.clock.elapsedTime) % 1 === 0) {
+					let bullet = new Rect({
+						x: ins.x,
+						y: ins.y,
+						width: 2,
+						height: 2,
+					})
 
-	let sp = new Sprite(input, sprite)
-	l.add(sp)
-	r.add(l)
-	console.log(sp)
-	sp.start(() => {
-
+					l.add(bullet)
+					bullet.start(() => {
+						bullet.x += 20
+						if (bullet.x >= bullet.cvWidth) {
+							l.removeChild(bullet)
+						}
+						console.log(l.children)
+					})
+				}
+			}
+		})
 	})
+
+	l.add(bug)
+	r.add(l)
+
 	r.openAnimate()
+
+	function resetPosition (ins) {
+		let {minX, minY, maxX, maxY} = ins.getSize()
+		if (ins.x <= minX) {
+			ins.x = minX
+		} else if (ins.x >= maxX) {
+			ins.x = maxX
+		} else if (ins.y <= minY) {
+			ins.y = minY
+		} else if (ins.y >= maxY) {
+			ins.y = maxY
+		}
+	}
 
 	// let cv = utils.createEl('canvas', {cvWidth: 600, cvHeight: 450, position: 'relative'})
 	// document.body.appendChild(cv)

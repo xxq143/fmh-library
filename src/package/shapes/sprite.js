@@ -13,10 +13,12 @@ export class Sprite extends Img {
 	 * @param {globalConfig} config
 	 * @return {}
 	 */
-	constructor (input, list = [], config = globalConfig) {
+	constructor (list = [], input, config = globalConfig) {
 		super(config)
-		this.input = input;
-		this.input.changeDomEl(Node.domEl)
+		if (input) {
+			this.input = input;
+			this.input.changeDomEl(Node.domEl)
+		}
 		this.createSpritePic(list);
 	}
 
@@ -31,8 +33,9 @@ export class Sprite extends Img {
 			// document.body.appendChild(res.img)
 			this.renderList = res.list
 			this.spritePic = res.img
-			this.action = Object.keys(res.list)[2]
+			this.action = Object.keys(res.list)[0]
 			utils.success('加载完成', res)
+			this.publish('ready', this)
 		}).catch(err => {
 			console.log(err)
 			utils.error('image load error', err);
@@ -52,8 +55,10 @@ export class Sprite extends Img {
 			let {image, x, y, width, height, dx, dy, dWidth, dHeight} = this.renderList[this.action][position];
 			// this.x = Math.sin(this.clock.elapsedTime) * 100 + 100
 			// this.y = Math.cos(this.clock.elapsedTime) * 10 + 100
-			this.x = this.input.position.x
-			this.y = this.input.position.y
+			// if (this.input) {
+			// 	this.x = this.input.position.x
+			// 	this.y = this.input.position.y
+			// }
 			ctx.drawImage(image, x, y, width, height, this.x, this.y, dWidth, dHeight)
 		}
 	}
@@ -90,6 +95,23 @@ export class Sprite extends Img {
 	 */
 	resetAllSpeed (speed = this.speed) {
 		this.changeSpeed('all', speed)
+	}
+
+	/**
+	 * @description 获取画布的边界范围
+	 * @param {type} key discribe
+	 * @param {}
+	 * @return {object}
+	 */
+	getSize () {
+		let width = this.renderList[this.action][0].dWidth / 2
+		let height = this.renderList[this.action][0].dHeight / 2
+		return {
+			minX: width,
+			maxX: this.cvWidth - width,
+			minY: height,
+			maxY: this.cvHeight - height,
+		}
 	}
 }
 
