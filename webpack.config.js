@@ -11,6 +11,6 @@ module.exports = {
 		},
 		clean: true,
 	},
-	mode: 'production',
+	mode: 'development',
 	devtool: 'source-map',
 }

@@ -25,8 +25,13 @@ function removeEvent (types, cb, isKeyboard) {
 }
 
 export class Input {
-	lastKey = ''
-	lastType = ''
+	lastKey = ''	// 最后一次触发的键位
+	lastType = ''	// 最后一次触发的事件类型
+	codeList = [81, 87, 69, 82, 84, 89, 85, 73, 79, 80, 65, 83, 68, 70, 71, 72, 74, 75, 76, 90, 88, 67, 86, 66, 78, 77]	// 技能键列表
+	directionKeyList = []	// 方向键位列表
+	otherKeyList = []	// 技能键位列表
+	otherKeyCode = []	// 最后触发的技能键
+	directive = ''	// 方向组件键
 	static el = null
 	types = ['click']
 	mouseEvent = [
@@ -48,7 +53,7 @@ export class Input {
 		x: 0,
 		y: 0,
 	}
-	keyMap = {
+	directionKeyMap = {
 		'_38': 'u',
 		'_40': 'd',
 		'_37': 'l',
@@ -100,8 +105,36 @@ export class Input {
 			this.position.y = e.offsetY;
 		}
 		if (this.types.some(type => this.keyBoardEvent.includes(type)) && this.keyBoardEvent.includes(e.type)) {
-			this.lastKey = this.keyMap[`_${e.keyCode}`]
+			this.lastKey = this.directionKeyMap[`_${e.keyCode}`]
 			this.lastType = e.type
+			if (e.type === 'keydown') {
+				if (this.directionKeyList.length < 2) {
+					this.directionKeyList.push(this.directionKeyMap[`_${e.keyCode}`])
+				} else {
+					this.directionKeyList.splice(this.directionKeyList.length - 1, 1, this.directionKeyMap[`_${e.keyCode}`])
+				}
+				if (this.otherKeyList.length === 0 && this.codeList.includes(e.keyCode)) {
+					this.otherKeyCode = []
+					this.otherKeyCode.push(e.keyCode)
+				}
+			} else if (e.type === 'keyup') {
+				this.directionKeyList = this.directionKeyList.filter(key => key !== this.directionKeyMap[`_${e.keyCode}`])
+				if (this.otherKeyCode[0] === e.keyCode) {
+					this.otherKeyCode = []
+				}
+			}
+			this.setPosition()
+		}
+	}
+
+	setPosition () {
+		let list = this.directionKeyList;
+		if (list.length === 0) {
+			this.directive = ''
+		} else if (list.length === 1) {
+			this.directive = list.join('')
+		} else if (list.length === 2) {
+			this.directive = list.join('')
 		}
 	}
 

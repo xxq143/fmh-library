@@ -214,6 +214,8 @@ export class Shape extends Node {
 		let currentLayer = this.getRoot().getLayers().filter(layer => layer._id === this._parentId)[0]
 		return currentLayer._getCtx()
 	}
+
+
 }
 
 export default Shape
