@@ -20,6 +20,7 @@
     </style>
 </head>
 <body>
+<div class="container box"></div>
 <script src="../dist/fmh-bc.js"></script>
 <script>
 
@@ -77,8 +78,9 @@
 	// })
 
 	// console.log(utils.generateSpritePicture);
-
-	let r = new Root()
+	let container = document.querySelector('.box')
+	console.log(container)
+	let r = new Root({domEl: container})
 	let l = new Layer()
 	let lists = []
 	lists.name = 'gothit'
