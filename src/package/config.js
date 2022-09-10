@@ -5,8 +5,8 @@ export const globalConfig = {
 	domEl: null,	// dom容器
 	maxLayers: 4,	// 最多4个图层
 	isDrawLayer: true,	// 绘制整个图层否则绘制单个图形
-	cvWidth: 600,
-	cvHeight: 460,
+	cvWidth: 500,
+	cvHeight: 309,
 	x: 0,
 	y: 0,
 	width: 50,

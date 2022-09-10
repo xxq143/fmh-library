@@ -2,6 +2,10 @@ export function error (str, ...rest) {
 	console.log('%c error: %s', 'color: red', str, rest)
 }
 
+export function success (str, ...rest) {
+	console.log('%c success: %s', 'color: lime', str, rest)
+}
+
 export function warn (str, ...rest) {
 	console.log('%c warn: %s', 'color: orange', str, rest)
 }
@@ -26,22 +30,33 @@ export function flatNodes (data) {
 	return result
 }
 
-export function createEl (tag, options) {
-	let div = document.createElement(tag)
-	if (options) {
-		let {cvWidth, cvHeight, width, height} = options;
-		div.style.position = options.position || 'absolute';
-		div.style.top = options.top || '0';
-		div.style.left = options.left || '0';
-		div.style.border = '1px solid rgba(0,0,0,.05)';
-		div.width = cvWidth;
-		div.height = cvHeight
-		if (width && height) {
-			div.style.width = `${width}px`;
-			div.style.height = `${height}px`;
+export function createEl (tag, options = {cvWidth: 500, cvHeight: 309}) {
+	let el = null;
+	let {cvWidth, cvHeight} = options;
+	if (tag === 'root') {
+		el = document.createElement('div')
+		el.id = 'fmh-root'
+		el.style.position = 'relative';
+		el.style.border = '2px double lime';
+		el.style.width = `${cvWidth}px`;
+		el.style.height = `${cvHeight}px`;
+	} else if (tag === 'layer') {
+		el = document.createElement('canvas')
+		if (options) {
+			el.style.position = 'absolute';
+			el.style.top = '0';
+			el.style.left = '0';
+			el.style.width = `${cvWidth}px`;
+			el.style.height = `${cvHeight}px`;
 		}
+	} else if (tag === 'canvas') {
+		el = document.createElement(tag)
+		el.width = cvWidth;
+		el.height = cvHeight;
+	} else {
+		el = document.createElement(tag)
 	}
-	return div;
+	return el;
 }
 
 export function randomColor () {
@@ -81,10 +96,11 @@ export function loadImage (src) {
 /**
  * @description	生成精灵图
  * @param {Array<object>} urls 动画列表  [{name: [url: 'str']}]
- * @param {number} scale 整体精灵图缩放大小
+ * @param {number} size 每张图片的目标大小
+ * @param {number} speed 每组图片的渲染速度，后期可调整
  * @return {Promise}
  */
-export function generateSpritePicture (urls, scale = 10) {
+export function generateSpritePicture (urls, size = 50, speed = 10) {
 	return new Promise(async (resolve, reject) => {
 		if (!urls || urls.length === 0) {
 			reject();
@@ -97,80 +113,129 @@ export function generateSpritePicture (urls, scale = 10) {
 		let pic = {}
 		for (const url of urls) {
 			result[url.name] = []
+			result[url.name].speed = speed;
 			let colIndex = 0;
 			for (const u of url) {
-				const img = await loadImage(u)
-				pic[url.name] = {}
-				pic[url.name]['img'] = img
-				pic[url.name]['len'] = colIndex
-				result[url.name].push({
+				const img = await loadImage(u).catch(err => reject(err))
+				pic[url.name] = {
+					img,
+					len: colIndex,
+				}
+				let {width, height, dWidth, dHeight} = calculateImgSize(img, size)
+				let imgItem = {
 					image: img,
-					x: colIndex * img.width,
-					y: rowIndex * img.height,
-					width: img.width,
-					height: img.height,
-				})
+					x: 0,
+					y: 0,
+					width,
+					height,
+					dx: colIndex * size,
+					dy: rowIndex * size,
+					dWidth,
+					dHeight,
+				}
+				result[url.name].push(imgItem)
 				colIndex++
 			}
 			rowIndex++
 		}
 		Object.keys(pic).forEach((key, index) => {
-			maxWidth = Math.max(maxWidth, pic[key].img.width * pic[key].len);
-			maxHeight = Math.max(maxHeight, pic[key].img.height * (index + 1))
+			maxWidth = Math.max(maxWidth, size * pic[key].len);
+			maxHeight = Math.max(maxHeight, size * (index + 1))
 		})
 
 		let cv = createEl('canvas', {
 			cvWidth: maxWidth,
 			cvHeight: maxHeight,
-			top: 400,
-			position: 'relative',
-		})
-		cv.style.border = '2px solid red'
-		let scaleCv = createEl('canvas', {
-			cvWidth: maxWidth / scale,
-			cvHeight: maxHeight / scale,
-			top: 400,
-			position: 'relative',
 		})
 		let ctx = cv.getContext('2d');
-		let scaleCtx = scaleCv.getContext('2d');
 		Object.keys(result).forEach(key => {
 			result[key].forEach(item => {
-				let {image, x, y, width, height} = item
-				ctx.drawImage(image, x, y, width, height)
+				let {image, x, y, width, height, dx, dy, dWidth, dHeight} = item
+				ctx.drawImage(image, x, y, width, height, dx, dy, dWidth, dHeight)
 			})
 		})
-		scaleCtx.drawImage(cv, 0, 0, maxWidth, maxHeight, 0, 0, maxWidth / scale, maxHeight / scale);
-		scaleCv.toBlob(async blob => {
-			let url = URL.createObjectURL(blob);
+		canvasToBlob(cv).then(url => {
 			loadImage(url).then(img => {
-				let list = {}
-				Object.keys(result).map(item => {
-					list[item] = [];
-					result[item].forEach(picItem => {
-						list[item].push({
-							image: picItem.image,
-							x: picItem.x / scale,
-							y: picItem.y / scale,
-							width: picItem.width / scale,
-							height: picItem.width / scale,
-						})
-					})
-				})
 				let spriteResult = {
 					img,
-					list,
+					list: result,
 				}
 				resolve(spriteResult)
 			}).catch(err => {
 				reject(err)
-			})
-		}, 'image/png', 1);
+			});
+		}).catch(err => {
+			reject(err)
+		})
 	})
+}
+
+/**
+ * @description 更具图片的宽高比，计算出图片的目标大小
+ * @param {Image} img 图片源
+ * @param {number} size 最终期望的图片大小
+ * @param {boolean} needAspectRatio 是否需要保持宽高比
+ * @return {object} {x: number, y: number}
+ */
+export function calculateImgSize (img, size, needAspectRatio = false) {
+	let imgWidthSize = size; // 图片宽度缩放后大小 目标大小
+	let imgHeightSize;      // 图片高度缩放后大小 目标大小
+	let imgNaturalWidth = img.naturalWidth;    // 图片的自然宽度
+	let imgNaturalHeight = img.naturalHeight;   // 图片的自然高度
+	let imgAspectRatio;     // 图片的宽高比
+	if (needAspectRatio) {
+		imgAspectRatio = imgNaturalWidth / imgNaturalHeight;
+		imgHeightSize = imgWidthSize / imgAspectRatio;
+	} else {
+		imgHeightSize = size;
+	}
+
+	return {
+		image: img,
+		dWidth: imgWidthSize,
+		dHeight: imgHeightSize,
+		width: imgNaturalWidth,
+		height: imgNaturalHeight,
+	}
+}
+
+export function canvasToBlob (canvas) {
+	return new Promise((resolve) => {
+		canvas.toBlob(blob => {
+			let url = URL.createObjectURL(blob);
+			resolve(url)
+		}, 'image/png', 1)
+	})
+}
+
+/**
+ * @description 校验字段类型
+ * @param {any} data
+ * @return {string}
+ */
+export function checkType (data) {
+	if ([null, undefined].includes(data)) {
+		throw new Error(`校验字段不存在${data}`)
+	}
+	let type = Object.prototype.toString.call(data).toLowerCase()
+	return type.substring(8, type.length - 1)
+}
+
+export function isArray (array) {
+	return checkType(array) === 'array'
+}
+
+export function isString (str) {
+	return checkType(str) === 'string'
+}
+
+export function isNumber (num) {
+	return checkType(num) === 'number'
 }
 
 export default {
 	error,
+	success,
 	warn,
 	info,
 	flatNodes,
@@ -179,4 +244,10 @@ export default {
 	setCbName,
 	loadImage,
 	generateSpritePicture,
+	calculateImgSize,
+
+	checkType,
+	isArray,
+	isString,
+	isNumber,
 }
