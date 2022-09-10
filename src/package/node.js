@@ -59,8 +59,8 @@ export class Node {
 			Node.domEl = domEl
 		} else {
 			Node.domEl = utils.createEl('root', globalConfig);
+			document.body.appendChild(Node.domEl)
 		}
-		document.body.appendChild(Node.domEl)
 	}
 
 	setType (type) {
