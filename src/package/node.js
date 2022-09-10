@@ -51,8 +51,11 @@ export class Node {
 		if (Node.domEl) {
 			return
 		}
-		let {domEl} = config
+		let {domEl, cvWidth, cvHeight} = config
 		if (domEl) {
+			domEl.style.width = `${cvWidth || globalConfig.cvWidth}px`
+			domEl.style.height = `${cvHeight || globalConfig.cvHeight}px`
+			domEl.style.position = 'relative'
 			Node.domEl = domEl
 		} else {
 			Node.domEl = utils.createEl('root', globalConfig);
