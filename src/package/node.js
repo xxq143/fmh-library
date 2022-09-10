@@ -55,9 +55,8 @@ export class Node {
 		if (domEl) {
 			Node.domEl = domEl
 		} else {
-			Node.domEl = utils.createEl('div', globalConfig);
+			Node.domEl = utils.createEl('root', globalConfig);
 		}
-		Node.domEl.style.position = 'relative';
 		document.body.appendChild(Node.domEl)
 	}
 

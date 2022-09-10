@@ -16,6 +16,10 @@ export class Shape extends Node {
 	updateList = []
 	updateTime = 0
 	randomColor = false
+	speed = 10
+	renderList = []
+	action = ''
+	input = null
 	ctxAttrs = {
 		lineWidth: 1,
 		drawType: 'stroke',
@@ -111,6 +115,13 @@ export class Shape extends Node {
 			this.getRoot().clear(this)
 		}
 		this._draw(ctx, type)
+		this.controlUpdate()
+	}
+
+	controlUpdate () {
+		// let speed = Math.abs(1 / (this.renderList[this.action].speed || this.speed))
+		// console.log(speed)
+
 	}
 
 	refreshClock () {

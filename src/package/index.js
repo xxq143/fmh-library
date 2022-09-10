@@ -7,7 +7,10 @@ import Rect from './shapes/rect'
 import Circle from './shapes/circle';
 import Line from './shapes/line'
 import Img from './shapes/img'
+import Sprite from './shapes/sprite'
 import utils from './utils'
+import Input from './input'
+
 export {
 	Root,
 	Canvas,
@@ -18,7 +21,9 @@ export {
 	Circle,
 	Line,
 	Img,
-	utils
+	Sprite,
+	utils,
+	Input
 }
 export default {
 	Root,
@@ -30,5 +35,7 @@ export default {
 	Circle,
 	Line,
 	Img,
-	utils
+	Sprite,
+	utils,
+	Input
 }

@@ -3,7 +3,7 @@ import utils from './utils'
 export class Canvas {
 	sceneCanvas = null
 	constructor(config = globalConfig) {
-		this.sceneCanvas = utils.createEl('canvas')
+		this.sceneCanvas = utils.createEl('layer')
 		this.sceneCanvas.style.position = 'absolute';
 		this.sceneCanvas.style.top = '0';
 		this.sceneCanvas.style.left = '0';
