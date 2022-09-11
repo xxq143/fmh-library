@@ -26,61 +26,13 @@
 <script src="../dist/fmh-bc.js"></script>
 <script>
 
-	let {Root, Layer, Group, Rect, Circle, Line, Img, utils, Sprite, Input, Player} = fmhBC.fmh;
-
-	// let rect = new Rect()
-	// r.add(l)
-	// l.add(rect)
-	//
-	// rect.fill()
-	// rect.start(() => {
-	// 	rect.x = Math.sin(rect.clock.elapsedTime * 10) * 20 + 100
-	//     rect.y = Math.cos(rect.clock.elapsedTime * 10) * 20 + 100
-	// })
-	// r.openAnimate()
-	// let l2 = new Layer()
-	// let g = new Group()
-	// let list = []
-	// let layerList = []
-	//
-	// function loadImage () {
-	// 	return new Promise((resolve, reject) => {
-	// 		let list = []
-	// 		for (let i = 0; i < 8; i++) {
-	// 			list.push(utils.loadImage(`./furr_walking_monster/gothit/skeleton-got_hit_${i}.png`))
-	// 		}
-	// 		Promise.all(list).then(res => {
-	// 			let size = 50;
-	// 			let result = res.map((img, index) => {
-	// 				return {
-	// 					image: img,
-	// 					x: index * size,
-	// 					y: 0,
-	// 					width: size,
-	// 					height: size,
-	// 				}
-	// 			})
-	// 			resolve(result)
-	// 		}).catch(err => {
-	// 			reject(err)
-	// 		})
-	// 	})
-	// }
-	//
-	// loadImage().then(res => {
-	// 	res.forEach(item => {
-	// 		let img = new Img(item)
-	// 		l.add(img)
-	// 		img.start(() => {
-	// 			img.x++
-	// 		})
-	// 	})
-	// 	l.isDrawLayer = false;
-	// 	r.add(l)
-	// })
-
-
-	// console.log(utils.generateSpritePicture);
+	let {Root, Layer, Group, Rect, Circle, Line, Img, utils, Sprite, Input, Player, Background} = fmhBC.fmh;
+	let bgImg = ['./bgImg.jpeg']
+	let bgImg2 = ['./bgImg.jpeg']
+	bgImg.name = 'backgroundImg'
+	bgImg2.name = 'backgroundImg2'
+	let bg = new Background([bgImg, bgImg2], 3)
+	let bgL = new Layer();
 	let container = document.querySelector('.box')
 	let r = new Root({domEl: container})
 	let l = new Layer()
@@ -105,109 +57,24 @@
 		lists2,
 		lists3,
 	]
-	// let bugList = [];
-	// bugList.name = 'bug';
-	// for (let i = 0; i < 15; i++) {
-	// 	bugList.push(`./png/skeleton-animation_${i < 10 ? '0' + i : i}.png`)
-	// }
 
 	let input = new Input('all')
-	// for(let i =0;i<1;i++) {
-	// 	let bug = new Sprite([bugList], input)s
-	// 	l.add(bug)
-	// }
 
-	
 	let player = new Player(sprite, input, {x: 50})
 	let player2 = new Player(sprite, input, {x: 400})
 	console.log(player, player2)
 	l.add(player)
 	l2.add(player2)
-	r.add(l, l2)
+	bgL.add(bg)
+	r.add(l, l2, bgL)
 	let speed = 10
 	Root.ob.on('allReady', (res) => {
-		// l.children.forEach(item => item.changeSpeed('all', 50))
+		bg.start(() => {
+			this.x--;
+			this.x2--
+		})
 		r.openAnimate()
 	})
-
-
-	// Root.ob.on('input', (input) => {
-	// 	console.log(input)
-	// 	let ins = bug;
-	// 	if (ins.input.directive === 'u') {
-	// 			ins.y -= speed
-	// 			resetPosition(ins)
-	// 		} else if (ins.input.directive === 'r') {
-	// 			ins.x += speed
-	// 			resetPosition(ins)
-	// 		} else if (ins.input.directive === 'd') {
-	// 			ins.y += speed
-	// 			resetPosition(ins)
-	// 		} else if (ins.input.directive === 'l') {
-	// 			ins.x -= speed
-	// 			resetPosition(ins)
-	// 		} else if (['ur', 'ru'].includes(ins.input.directive)) {
-	// 			ins.x += speed
-	// 			ins.y -= speed
-	// 			resetPosition(ins)
-	// 		} else if (['ul', 'lu'].includes(ins.input.directive)) {
-	// 			ins.x -= speed
-	// 			ins.y -= speed
-	// 			resetPosition(ins)
-	// 		} else if (['dr', 'rd'].includes(ins.input.directive)) {
-	// 			ins.x += speed
-	// 			ins.y += speed
-	// 			resetPosition(ins)
-	// 		} else if (['dl', 'ld'].includes(ins.input.directive)) {
-	// 			ins.x -= speed
-	// 			ins.y += speed
-	// 			resetPosition(ins)
-	// 		}
-	// })
-
-	// r.openAnimate()
-
-	function resetPosition (ins) {
-		let {minX, minY, maxX, maxY} = ins.getSize()
-		if (ins.x <= minX) {
-			ins.x = minX
-		} else if (ins.x >= maxX) {
-			ins.x = maxX
-		} else if (ins.y <= minY) {
-			ins.y = minY
-		} else if (ins.y >= maxY) {
-			ins.y = maxY
-		}
-	}
-
-	// let cv = utils.createEl('canvas', {cvWidth: 600, cvHeight: 450, position: 'relative'})
-	// document.body.appendChild(cv)
-	// let ctx = cv.getContext('2d')
-	// let img = new Image()
-	// img.src = './bg.png'
-	// var dx = 0;
-	// var dy = 0;
-	// var dWidth
-	// var dHeight
-	//
-	// let iw;
-	// let ih;
-	// let size = 200;
-	// let wp = iw / size;
-	// let hp = ih / size;
-	//
-	// img.onload = () => {
-	// 	iw = img.naturalWidth;
-	// 	ih = img.naturalHeight;
-	// 	wp = iw / size;
-	// 	hp = ih / size;
-	// 	dWidth = iw / wp;
-	// 	whp = iw / ih;
-	// 	dHeight = dWidth / whp
-	//
-	// 	drawIt()
-	//
-	// }
 
 
 </script>

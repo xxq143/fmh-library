@@ -1,6 +1,7 @@
 import Node from './node'
 import globalConfig from './config.js'
 import utils from './utils'
+import Root from './root'
 
 /**
  * @description 图形基础属性

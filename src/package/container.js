@@ -87,29 +87,31 @@ export class Container extends Node {
 		}
 	}
 
-	updateAllLayers(layers) {
+	updateAllLayers (layers) {
 		this.isAllReady().then(res => {
 			Root.ob.publish('allReady', res)
+			utils.info('加载完成')
 			layers.forEach(layer => {
 				layer.layerDraw()
 			})
 		}).catch(err => {
-			utils.error('加载异常',err)
+			console.log(err);
+			utils.error('加载异常', err)
 		})
 	}
 
-	isAllReady() {
+	isAllReady () {
 		return new Promise(async (resovle, reject) => {
-			let nodes = this.getRoot().nodes.filter(node =>node.nodeType === 'shape' && node.typeList.includes('img'));
+			let nodes = this.getRoot().nodes.filter(node => node.nodeType === 'shape' && node.typeList.includes('img'));
 			let len = nodes.length;
 			let list = [];
-			for(let node of nodes) {
-				let readyNode = await node.ready();
+			for (let node of nodes) {
+				let readyNode = await node?.ready?.();
 				list.push(readyNode);
 			}
-			if(list.length === len) {
+			if (list.length === len) {
 				resovle(list)
-			}else{
+			} else {
 				reject(list)
 			}
 		})
