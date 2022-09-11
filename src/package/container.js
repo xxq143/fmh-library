@@ -22,10 +22,13 @@ export class Container extends Node {
 				n.setParentId(this._id);
 				this.children.push(n)
 			})
-			utils.info(`${nodes.length > 1 ? 'nodes' : 'node'} was added`, nodes)
-			this.insetLayers()
+			// utils.info(`${nodes.length > 1 ? 'nodes' : 'node'} was added`, nodes)
+			this.insertLayers()
 			this.flatNodes()
-			this._deepUpdate(this.getRoot())
+			// 等待同步任务执行完成后，再执行更新操作
+			setTimeout(() => {
+				this.updateAllLayers(this.getRoot().getLayers())
+			})
 		}
 	}
 
@@ -50,7 +53,7 @@ export class Container extends Node {
 	 * @description  将图层插入到真实dom中
 	 * @return {void}
 	 */
-	insetLayers () {
+	insertLayers () {
 		let layers = this.children.filter(child => child.nodeType.includes('layer'));
 		layers.forEach(layer => {
 			this.insertLayerToRootContainer(layer.canvas);
@@ -80,7 +83,36 @@ export class Container extends Node {
 			})
 		} else {
 			node.nodeDraw()
+			console.log('add')
 		}
+	}
+
+	updateAllLayers(layers) {
+		this.isAllReady().then(res => {
+			Root.ob.publish('allReady', res)
+			layers.forEach(layer => {
+				layer.layerDraw()
+			})
+		}).catch(err => {
+			utils.error('加载异常',err)
+		})
+	}
+
+	isAllReady() {
+		return new Promise(async (resovle, reject) => {
+			let nodes = this.getRoot().nodes.filter(node =>node.nodeType === 'shape' && node.typeList.includes('img'));
+			let len = nodes.length;
+			let list = [];
+			for(let node of nodes) {
+				let readyNode = await node.ready();
+				list.push(readyNode);
+			}
+			if(list.length === len) {
+				resovle(list)
+			}else{
+				reject(list)
+			}
+		})
 	}
 }
 

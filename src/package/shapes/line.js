@@ -16,7 +16,8 @@ export class Line extends Shape {
 	 * @param {Ctx} ctx discribe
 	 * @return {void}
 	 */
-	_draw (ctx, type) {
+	_draw () {
+		let ctx = this.getCtx()
 		if (this.drawType === 'stroke') {
 			// 每次都重新绘制路径
 			ctx.beginPath()

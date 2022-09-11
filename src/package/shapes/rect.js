@@ -14,7 +14,8 @@ export class Rect extends Shape{
 	 * @param {Ctx} ctx discribe
 	 * @return {void}
 	 */
-	_draw (ctx) {
+	_draw () {
+		let ctx = this.getCtx()
 		let {x, y, width, height} = this;
 		ctx[`${this.drawType}Rect`](x, y, width, height)
 	}

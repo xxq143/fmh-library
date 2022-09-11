@@ -19,20 +19,18 @@ export class Shape extends Node {
 	speed = 10
 	renderList = []
 	action = ''
-	input = null
 	ctxAttrs = {
 		lineWidth: 1,
 		drawType: 'stroke',
 		color: 'black',
 	}
 	lastElapsed = 0	// 记录暂停时记录的时间
+	vx = 0
+	vy = 0
 
 	constructor (config = globalConfig) {
 		super(config);
 		this.setType('shape')
-		this.refreshClock = this.refreshClock.bind(this)
-		this.startClock = this.startClock.bind(this)
-		this.stopClock = this.stopClock.bind(this)
 		Object.keys(this.ctxAttrs).forEach(attr => {
 			this[attr] = this.ctxAttrs[attr]
 		})
@@ -45,23 +43,25 @@ export class Shape extends Node {
 	 * @return {}
 	 */
 	// todo 目前动画有bug
-	_update (ctx) {
-		if (this.updateList.length > 0 && this.getRoot().looping) {
-			this.updateList.forEach(cb => {
-				if (cb.fun && cb.name && cb.playing) {
-					cb.fun();
-				}
-			})
-		}
-		if (this.isDrawLayer) {
-			// 绘制单个图层
-			let layer = this.getRoot().getLayers(this)[0]
-			layer._clear()
-			layer.layerDraw(ctx)
-		} else {
-			// 绘制单个图形
-			this.shapeDraw(ctx)
-		}
+	shapeUpdate () {
+		this.shapeDraw()
+		// if (this.updateList.length > 0 && this.getRoot().looping) {
+		// 	this.updateList.forEach(cb => {
+		// 		if (cb.fun && cb.name && cb.playing) {
+		// 			cb.fun();
+		// 		}
+		// 	})
+		// }
+		// if (this.isDrawLayer) {
+		// 	// 绘制单个图层
+		// 	let layer = this.getRoot().getLayers(this)[0]
+		// 	layer._clear()
+		// 	layer.layerDraw(ctx)
+		// } else {
+		// 	// 绘制单个图形
+		// 	console.log('shape')
+		// 	this.shapeDraw(ctx)
+		// }
 
 	}
 
@@ -108,14 +108,23 @@ export class Shape extends Node {
 	 * @param {string} type change | refresh  change：会基于上一次绘制结果继续绘制， refresh：会重置画笔后重新绘制
 	 * @return {void}
 	 */
-	shapeDraw (ctx, type = 'change') {
+	shapeDraw () {
+		let ctx = this.getLayer()._getCtx()
 		this.setCtxAttrs(ctx)
 		ctx.save()
-		if (this.getRoot().autoClear && !this.isDrawLayer) {
-			this.getRoot().clear(this)
+		// if (this.getRoot().autoClear && !this.isDrawLayer) {
+		// 	this.getRoot().clear(this)
+		// }
+		// this.getRoot().getLayers(this)[0]._clear()
+		if(this.updateList.length > 0 && this.getRoot().looping) {
+			this.updateList.forEach(cb => {
+				if(cb.playing && cb.name && cb.fun) {
+					cb.fun()
+				}
+			})
 		}
-		this._draw(ctx, type)
-		this.controlUpdate()
+		this._draw()
+		// this.controlUpdate()
 	}
 
 	controlUpdate () {
@@ -124,18 +133,18 @@ export class Shape extends Node {
 
 	}
 
-	refreshClock () {
-		this.clock.getDelta();
-	}
+	// refreshClock () {
+	// 	this.clock.getDelta();
+	// }
 
-	startClock () {
-		this.clock.start(this.lastElapsed)
-	}
+	// startClock () {
+	// 	this.clock.start(this.lastElapsed)
+	// }
 
-	stopClock () {
-		this.lastElapsed = this.clock.elapsedTime;
-		this.clock.stop()
-	}
+	// stopClock () {
+	// 	this.lastElapsed = this.clock.elapsedTime;
+	// 	this.clock.stop()
+	// }
 
 	/**
 	 * @description 开始单个图形的动画
@@ -211,10 +220,20 @@ export class Shape extends Node {
 
 	// 获取当前画布的画笔
 	getCurrentLayerCtx () {
-		let currentLayer = this.getRoot().getLayers().filter(layer => layer._id === this._parentId)[0]
+		let currentLayer = this.getRoot().getLayers(this)[0]
 		return currentLayer._getCtx()
 	}
 
+	getLayer() {
+		return this.getRoot().getLayers(this)[0]
+	}
+
+	getCvSize() {
+		return {
+			width:  this.getRoot().config.cvWidth,
+			height:  this.getRoot().config.cvHeight
+		}
+	}
 
 }
 

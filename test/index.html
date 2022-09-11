@@ -14,8 +14,8 @@
             height: 100vh;
             overflow: auto;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            /* align-items: center;
+            justify-content: center; */
         }
     </style>
 </head>
@@ -26,7 +26,7 @@
 <script src="../dist/fmh-bc.js"></script>
 <script>
 
-	let {Root, Layer, Group, Rect, Circle, Line, Img, utils, Sprite, Input} = fmhBC.fmh;
+	let {Root, Layer, Group, Rect, Circle, Line, Img, utils, Sprite, Input, Player} = fmhBC.fmh;
 
 	// let rect = new Rect()
 	// r.add(l)
@@ -79,10 +79,12 @@
 	// 	r.add(l)
 	// })
 
+
 	// console.log(utils.generateSpritePicture);
 	let container = document.querySelector('.box')
 	let r = new Root({domEl: container})
 	let l = new Layer()
+	let l2 = new Layer()
 	let lists = []
 	lists.name = 'gothit'
 	for (let i = 0; i < 8; i++) {
@@ -103,76 +105,67 @@
 		lists2,
 		lists3,
 	]
-	let bugList = [];
-	bugList.name = 'bug';
-	for (let i = 0; i < 15; i++) {
-		bugList.push(`./png/skeleton-animation_${i < 10 ? '0' + i : i}.png`)
-	}
+	// let bugList = [];
+	// bugList.name = 'bug';
+	// for (let i = 0; i < 15; i++) {
+	// 	bugList.push(`./png/skeleton-animation_${i < 10 ? '0' + i : i}.png`)
+	// }
 
 	let input = new Input('all')
-	console.log(bugList)
-	let bug = new Sprite([bugList], input)
-	console.log(bug);
-	let sp = new Sprite(sprite, input)
-	bug.subscribe('ready', (ins) => {
-		ins.changeSpeed('bug', 1000)
-		let speed = 10
-		ins.start(() => {
-			if (ins.input.directive === 'u') {
-				ins.y -= speed
-				resetPosition(ins)
-			} else if (ins.input.directive === 'r') {
-				ins.x += speed
-				resetPosition(ins)
-			} else if (ins.input.directive === 'd') {
-				ins.y += speed
-				resetPosition(ins)
-			} else if (ins.input.directive === 'l') {
-				ins.x -= speed
-				resetPosition(ins)
-			} else if (['ur', 'ru'].includes(ins.input.directive)) {
-				ins.x += speed
-				ins.y -= speed
-				resetPosition(ins)
-			} else if (['ul', 'lu'].includes(ins.input.directive)) {
-				ins.x -= speed
-				ins.y -= speed
-				resetPosition(ins)
-			} else if (['dr', 'rd'].includes(ins.input.directive)) {
-				ins.x += speed
-				ins.y += speed
-				resetPosition(ins)
-			} else if (['dl', 'ld'].includes(ins.input.directive)) {
-				ins.x -= speed
-				ins.y += speed
-				resetPosition(ins)
-			}
-			if (ins.input.otherKeyCode[0] === 65) {
-				if (Math.floor(ins.clock.elapsedTime) % 1 === 0) {
-					let bullet = new Rect({
-						x: ins.x,
-						y: ins.y,
-						width: 2,
-						height: 2,
-					})
+	// for(let i =0;i<1;i++) {
+	// 	let bug = new Sprite([bugList], input)s
+	// 	l.add(bug)
+	// }
 
-					l.add(bullet)
-					bullet.start(() => {
-						bullet.x += 20
-						if (bullet.x >= bullet.cvWidth) {
-							l.removeChild(bullet)
-						}
-						console.log(l.children)
-					})
-				}
-			}
-		})
+	
+	let player = new Player(sprite, input, {x: 50})
+	let player2 = new Player(sprite, input, {x: 400})
+	console.log(player, player2)
+	l.add(player)
+	l2.add(player2)
+	r.add(l, l2)
+	let speed = 10
+	Root.ob.on('allReady', (res) => {
+		// l.children.forEach(item => item.changeSpeed('all', 50))
+		r.openAnimate()
 	})
 
-	l.add(bug)
-	r.add(l)
 
-	r.openAnimate()
+	// Root.ob.on('input', (input) => {
+	// 	console.log(input)
+	// 	let ins = bug;
+	// 	if (ins.input.directive === 'u') {
+	// 			ins.y -= speed
+	// 			resetPosition(ins)
+	// 		} else if (ins.input.directive === 'r') {
+	// 			ins.x += speed
+	// 			resetPosition(ins)
+	// 		} else if (ins.input.directive === 'd') {
+	// 			ins.y += speed
+	// 			resetPosition(ins)
+	// 		} else if (ins.input.directive === 'l') {
+	// 			ins.x -= speed
+	// 			resetPosition(ins)
+	// 		} else if (['ur', 'ru'].includes(ins.input.directive)) {
+	// 			ins.x += speed
+	// 			ins.y -= speed
+	// 			resetPosition(ins)
+	// 		} else if (['ul', 'lu'].includes(ins.input.directive)) {
+	// 			ins.x -= speed
+	// 			ins.y -= speed
+	// 			resetPosition(ins)
+	// 		} else if (['dr', 'rd'].includes(ins.input.directive)) {
+	// 			ins.x += speed
+	// 			ins.y += speed
+	// 			resetPosition(ins)
+	// 		} else if (['dl', 'ld'].includes(ins.input.directive)) {
+	// 			ins.x -= speed
+	// 			ins.y += speed
+	// 			resetPosition(ins)
+	// 		}
+	// })
+
+	// r.openAnimate()
 
 	function resetPosition (ins) {
 		let {minX, minY, maxX, maxY} = ins.getSize()

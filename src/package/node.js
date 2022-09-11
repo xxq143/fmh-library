@@ -1,7 +1,7 @@
 import globalConfig from './config.js'
 import utils from './utils';
 import Root from './root'
-import Clock from './clock';
+
 
 /**
  * @description	节点
@@ -16,8 +16,6 @@ export class Node {
 	constructor (config = globalConfig) {
 		this.setAttr(config)
 		this.initDom(config)
-		// 创建时钟
-		this.clock = new Clock(false)
 		this.setParentId = this.setParentId.bind(this)
 	}
 
@@ -109,40 +107,8 @@ export class Node {
 		this.getRootContainer().appendChild(layer)
 	}
 
-	/**
-	 * @description	节点的事件监听
-	 * @param {string} key 对应的节点事件列表名称
-	 * @param {function} fun 注册的回调函数
-	 * @return {void}
-	 */
-	subscribe (key, fun) {
-		console.log('subscribe', this)
-		this.listeners[`${key}${this._id}`] = []
-		this.listeners[`${key}${this._id}`].push(fun)
-	}
-
-	publish (key, ...arg) {
-		console.log('publish', this)
-		let list = this.listeners[`${key}${this._id}`] || []
-		for (let fun of list) {
-			fun.call(this, ...arg)
-		}
-	}
-
-	unSubscribe (key, fun) {
-		let listenerList = this.listeners[key]
-		if (!listenerList) {
-			return false
-		}
-		if (!fun) {
-			this.listeners[key] = [];
-		} else {
-			this.listeners[key].forEach((listen, index) => {
-				if (listen === fun) {
-					this.listeners.splice(index, 1)
-				}
-			})
-		}
+	getCtx() {
+		return this.getRoot().getLayers(this)[0]._getCtx()
 	}
 }
 

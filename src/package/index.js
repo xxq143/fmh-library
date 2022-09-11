@@ -10,6 +10,8 @@ import Img from './shapes/img'
 import Sprite from './shapes/sprite'
 import utils from './utils'
 import Input from './input'
+import Observer from './observer'
+import Player from './shapes/player'
 
 export {
 	Root,
@@ -23,7 +25,9 @@ export {
 	Img,
 	Sprite,
 	utils,
-	Input
+	Input,
+	Observer,
+	Player
 }
 export default {
 	Root,
@@ -37,5 +41,7 @@ export default {
 	Img,
 	Sprite,
 	utils,
-	Input
+	Input,
+	Observer,
+	Player
 }

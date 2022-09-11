@@ -29,7 +29,8 @@ export class Img extends Shape {
 	 * @param {Ctx} ctx discribe
 	 * @return {void}
 	 */
-	_draw (ctx) {
+	_draw () {
+		let ctx = this.getCtx()
 		if (this.useAttrs) {
 			let {image, x, y, width, height, dx, dy, dWidth, dHeight} = this;
 			ctx.drawImage(image, x, y, width, height, dx, dy, dWidth, dHeight)

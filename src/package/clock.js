@@ -46,9 +46,9 @@ export class Clock {
 			let newTime = now();
 			diff = (newTime - this.oldTime) / 1000
 			this.oldTime = newTime
-
 			this.elapsedTime += diff
 		}
+		// console.log(diff)
 		return diff
 	}
 }
