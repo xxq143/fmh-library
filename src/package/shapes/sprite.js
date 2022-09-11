@@ -3,10 +3,11 @@ import globalConfig from '../config';
 import utils from '../utils'
 import Input from '../input'
 import Node from '../node'
+import Root from '../root'
+import Observer from '../observer'
 
 export class Sprite extends Img {
 	spritePic = null
-
 	/**
 	 * @description 精灵图动画正渲染
 	 * @param {Input} input
@@ -35,30 +36,32 @@ export class Sprite extends Img {
 			this.spritePic = res.img
 			this.action = Object.keys(res.list)[0]
 			utils.success('加载完成', res)
-			this.publish('ready', this)
+			Root.ob.publish('ready', this)
 		}).catch(err => {
 			console.log(err)
 			utils.error('image load error', err);
 		})
 	}
 
+	ready() {
+		return new Promise((resolve, reject) => {
+			Root.ob.on('ready', () => {
+				resolve(this)
+			})
+		})
+	}
 	/**
 	 * @description 处理内部精灵图的绘制
 	 * @param {Ctx} ctx discribe
 	 * @return {void}
 	 */
-	_draw (ctx) {
+	_draw () {
+		let ctx = this.getCtx()
 		// 如果精灵图已存在
 		if (this.spritePic) {
 			let speed = Math.abs(1 / (this.renderList[this.action].speed || this.speed))
-			let position = Math.floor((this.clock.elapsedTime / speed) % this.renderList[this.action].length)
+			let position = Math.floor((Root.clock.elapsedTime / speed) % this.renderList[this.action].length)
 			let {image, x, y, width, height, dx, dy, dWidth, dHeight} = this.renderList[this.action][position];
-			// this.x = Math.sin(this.clock.elapsedTime) * 100 + 100
-			// this.y = Math.cos(this.clock.elapsedTime) * 10 + 100
-			// if (this.input) {
-			// 	this.x = this.input.position.x
-			// 	this.y = this.input.position.y
-			// }
 			ctx.drawImage(image, x, y, width, height, this.x, this.y, dWidth, dHeight)
 		}
 	}
@@ -113,6 +116,12 @@ export class Sprite extends Img {
 			maxY: this.cvHeight - height,
 		}
 	}
+	getItemImgSize() {
+        return {
+            width: Object.values(this.renderList)[0][0].dWidth,
+            height: Object.values(this.renderList)[0][0].dHeight
+        }
+    }
 }
 
 export default Sprite
