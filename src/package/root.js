@@ -20,10 +20,11 @@ export class Root extends Container {
 	autoLooping = false //自动执行动画
 	constructor (config = globalConfig) {
 		super(config);
+		this.getLayers = this.getLayers.bind(this)
 		this.setType('root')
 		Root.clock = new Clock()
 		Root.ob = new Observer();
-		
+
 		if (new.target !== Root) {
 			return
 		}

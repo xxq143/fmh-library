@@ -12,6 +12,7 @@ import utils from './utils'
 import Input from './input'
 import Observer from './observer'
 import Player from './shapes/player'
+import Background from './shapes/background'
 
 export {
 	Root,
@@ -27,7 +28,8 @@ export {
 	utils,
 	Input,
 	Observer,
-	Player
+	Player,
+	Background
 }
 export default {
 	Root,
@@ -43,5 +45,6 @@ export default {
 	utils,
 	Input,
 	Observer,
-	Player
+	Player,
+	Background
 }

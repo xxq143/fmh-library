@@ -10,6 +10,10 @@ export class Canvas {
 		let {cvWidth, cvHeight} = config;
 		this.sceneCanvas.width = cvWidth
 		this.sceneCanvas.height = cvHeight
+		this.setIndex = this.setIndex.bind(this)
+	}
+	setIndex(index) {
+		this.sceneCanvas.style.zIndex = index
 	}
 }
 

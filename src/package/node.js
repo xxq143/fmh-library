@@ -2,7 +2,6 @@ import globalConfig from './config.js'
 import utils from './utils';
 import Root from './root'
 
-
 /**
  * @description	节点
  * @param {object} config 节点配置参数
@@ -10,6 +9,7 @@ import Root from './root'
  */
 export class Node {
 	static node_id = 0
+	static layer_index = 0
 	config = {}
 	static domEl = null
 
@@ -107,8 +107,12 @@ export class Node {
 		this.getRootContainer().appendChild(layer)
 	}
 
-	getCtx() {
+	getCtx () {
 		return this.getRoot().getLayers(this)[0]._getCtx()
+	}
+
+	getBg () {
+		return this.getRoot().nodes.filter(node => node.typeList.includes('background'))[0]
 	}
 }
 

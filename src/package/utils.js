@@ -100,7 +100,7 @@ export function loadImage (src) {
  * @param {number} speed 每组图片的渲染速度，后期可调整
  * @return {Promise}
  */
-export function generateSpritePicture (urls, size = 50, speed = 10) {
+export function generateSpritePicture (urls, size = 50, speed = 10, needAspectRatio = false) {
 	return new Promise(async (resolve, reject) => {
 		if (!urls || urls.length === 0) {
 			reject();
@@ -121,7 +121,7 @@ export function generateSpritePicture (urls, size = 50, speed = 10) {
 					img,
 					len: colIndex,
 				}
-				let {width, height, dWidth, dHeight} = calculateImgSize(img, size)
+				let {width, height, dWidth, dHeight} = calculateImgSize(img, size, needAspectRatio)
 				let imgItem = {
 					image: img,
 					x: 0,
@@ -148,6 +148,7 @@ export function generateSpritePicture (urls, size = 50, speed = 10) {
 			cvHeight: maxHeight,
 		})
 		let ctx = cv.getContext('2d');
+		// document.body.appendChild(cv)
 		Object.keys(result).forEach(key => {
 			result[key].forEach(item => {
 				let {image, x, y, width, height, dx, dy, dWidth, dHeight} = item
@@ -178,16 +179,16 @@ export function generateSpritePicture (urls, size = 50, speed = 10) {
  * @return {object} {x: number, y: number}
  */
 export function calculateImgSize (img, size, needAspectRatio = false) {
-	let imgWidthSize = size; // 图片宽度缩放后大小 目标大小
-	let imgHeightSize;      // 图片高度缩放后大小 目标大小
+	let imgHeightSize = size;      // 图片高度缩放后大小 目标大小
+	let imgWidthSize; // 图片宽度缩放后大小 目标大小
 	let imgNaturalWidth = img.naturalWidth;    // 图片的自然宽度
 	let imgNaturalHeight = img.naturalHeight;   // 图片的自然高度
 	let imgAspectRatio;     // 图片的宽高比
 	if (needAspectRatio) {
-		imgAspectRatio = imgNaturalWidth / imgNaturalHeight;
-		imgHeightSize = imgWidthSize / imgAspectRatio;
+		imgAspectRatio = imgNaturalHeight / imgNaturalWidth;
+		imgWidthSize = imgHeightSize / imgAspectRatio;
 	} else {
-		imgHeightSize = size;
+		imgWidthSize = size;
 	}
 
 	return {
