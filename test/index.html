@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>library</title>
+    <style>
+        body {
+            margin: 0;
+            box-sizing: border-box;
+            width: 100vw;
+            height: 100vh;
+            overflow: auto;
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+<div class="out-box">
+    <div class="container box"></div>
+</div>
+<script src="../dist/fmh-bc.js"></script>
+<script>
+
+	let {Root, Layer, Group, Rect, Circle, Line, Img, utils, Sprite, Input, Player, Background} = fmhBC.fmh;
+	let bgImg = ['./bgImg.jpeg']
+	let bgImg2 = ['./bgImg.jpeg']
+	bgImg.name = 'backgroundImg'
+	bgImg2.name = 'backgroundImg2'
+	let bg = new Background([bgImg, bgImg2], 3)
+	let bgL = new Layer();
+	let container = document.querySelector('.box')
+	let r = new Root({domEl: container})
+	let l = new Layer()
+	let l2 = new Layer()
+	let lists = []
+	lists.name = 'gothit'
+	for (let i = 0; i < 8; i++) {
+		lists.push(`./furr_walking_monster/gothit/skeleton-got_hit_${i}.png`)
+	}
+	let lists2 = []
+	lists2.name = 'attack'
+	for (let i = 0; i < 25; i++) {
+		lists2.push(`./furr_walking_monster/attack/skeleton-attack_${i}.png`)
+	}
+	let lists3 = []
+	lists3.name = 'walking'
+	for (let i = 0; i < 13; i++) {
+		lists3.push(`./furr_walking_monster/walking/skeleton-walking_${i}.png`)
+	}
+	let sprite = [
+		lists,
+		lists2,
+		lists3,
+	]
+
+	let input = new Input('all')
+
+	let player = new Player(sprite, input, {x: 50})
+	let player2 = new Player(sprite, input, {x: 400})
+	l.add(player)
+	l2.add(player2)
+	bgL.add(bg)
+	r.add(l, l2, bgL)
+	Root.ob.on('allReady', (res) => {
+		console.log(res);
+		// r.openAnimate()
+	})
+
+
+</script>
+</body>
+</html>
