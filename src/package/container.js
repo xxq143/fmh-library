@@ -69,23 +69,6 @@ export class Container extends Node {
 		this.getRoot().nodes = utils.flatNodes([this.getRoot()])
 	}
 
-	/**
-	 * @description 更新图层
-	 * @param {type} key discribe
-	 * @param {}
-	 * @return {}
-	 */
-	// _deepUpdate (node) {
-	// 	if (node.children && node.children.length > 0) {
-	// 		node.children.forEach(child => {
-	// 			this._deepUpdate(child)
-	// 		})
-	// 	} else {
-	// 		node.nodeDraw()
-	// 		console.log('add')
-	// 	}
-	// }
-
 	updateAllLayers (layers) {
 		this.isAllReady().then(res => {
 			Root.ob.publish('allReady', res)

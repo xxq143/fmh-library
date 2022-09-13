@@ -35,7 +35,6 @@ export class Root extends Container {
 		this.animate = this.animate.bind(this)
 		if (this.autoLooping) {
 			Root.clock.start();
-			console.log('open>>>>>>>>>>>>>>>>>constructor>')
 			this.looping = true;
 			this.autoClear = true;
 			this.animate();
@@ -53,24 +52,6 @@ export class Root extends Container {
 			this.rootUpdate()
 		}
 		requestAnimationFrame(this.animate)
-	}
-
-	/**
-	 * @description	更新所有的时钟
-	 * @return {void}
-	 */
-	// todo 目前动画有bug
-	syncClock () {
-		Root.clock.getDelta()
-		this.nodes.filter(node => node.nodeType === 'shape' && node.updateList.length > 0).forEach(ins => {
-			ins.updateList.forEach(cb => {
-				// if (cb.playing) {
-				// 	Root.clock.start()
-				// } else if (!cb.playing) {
-				// 	Root.clock.stop()
-				// }
-			})
-		})
 	}
 
 	rootUpdate () {

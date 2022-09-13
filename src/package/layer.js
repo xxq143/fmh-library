@@ -21,9 +21,6 @@ export class Layer extends Container {
 		this.canvas = this.cvInstance.sceneCanvas;
 		this.ctx = new Ctx(this.canvas).ctx
 		this.initIndex()
-		// this._getCtx = this._getCtx.bind(this)
-		// this._clear = this._clear.bind(this)
-		// this.layerUpdate = this.layerUpdate.bind(this)
 	}
 
 	initIndex () {
