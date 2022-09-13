@@ -25,6 +25,7 @@ export class Player extends Sprite {
 			this.input = input;
 			this.input.changeDomEl(Node.domEl)
 		}
+		this.addType('player')
 		this.createSpritePic(list);
 	}
 
@@ -57,12 +58,16 @@ export class Player extends Sprite {
 		this.y = this.getCvSize().height - this.getItemImgSize().height
 	}
 
+	update () {
+
+	}
+
 	/**
 	 * @description 处理内部精灵图的绘制
 	 * @param {Ctx} ctx discribe
 	 * @return {void}
 	 */
-	_draw () {
+	draw () {
 		let ctx = this.getCtx()
 		// 如果精灵图已存在
 		if (this.spritePic) {
@@ -70,12 +75,13 @@ export class Player extends Sprite {
 			let speed = Math.abs(1 / (this.renderList[this.action].speed || this.speed))
 			let position = Math.floor((Root.clock.elapsedTime / speed) % len)
 			let {image, x, y, width, height, dx, dy, dWidth, dHeight} = this.renderList[this.action][position];
-			this.setDirection(position, len)
+			this.setDirection(position, len, speed)
 			ctx.drawImage(image, x, y, width, height, this.x, this.y, dWidth, dHeight)
 		}
 	}
 
 	setDirection (position, len) {
+		let speed = 10;
 		let ins = this;
 		if (ins.input.otherKeyCode.length > 0) {
 			if (ins.input.otherKeyCode[0] === 65 && !this.attacking) {
@@ -133,7 +139,9 @@ export class Player extends Sprite {
 				// ins.y -= speed
 			} else if (['r', 'rr'].includes(ins.input.directive)) {
 				ins.x += speed
-				this.getBg().changeSpeed(this.getBg().defaultSpeed + 2)
+				if (this.getBg()) {
+					this.getBg().changeSpeed(this.getBg().defaultSpeed + 2)
+				}
 			} else if (['d', 'dd'].includes(ins.input.directive)) {
 				// ins.y += speed
 			} else if (['l', 'll'].includes(ins.input.directive)) {
@@ -154,7 +162,9 @@ export class Player extends Sprite {
 		}
 
 		if (!['r', 'rr', 'l', 'll'].includes(ins.input.directive)) {
-			this.getBg().resetSpeed()
+			if (this.getBg()) {
+				this.getBg().resetSpeed()
+			}
 		}
 		if (ins.input.directive && ins.action === 'walking') {
 			ins.changeSpeed('walking', 100)
@@ -181,13 +191,6 @@ export class Player extends Sprite {
 		let layer = this.getLayer()
 		layer.add(bullet);
 		console.log(layer)
-		bullet.start(() => {
-			bullet.x += 6
-			if (bullet.x >= this.getCvSize().width) {
-				layer.removeChild(bullet)
-			}
-		})
-
 	}
 }
 

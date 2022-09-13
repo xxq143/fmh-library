@@ -3,6 +3,7 @@ import Clock from './clock'
 import globalConfig from './config.js'
 import utils from './utils';
 import Observer from './observer'
+
 /**
  * @description  跟节点为单例模式
  * @param {Root} instance 单例
@@ -49,7 +50,7 @@ export class Root extends Container {
 			return
 		}
 		if (this.autoRender) {
-			this.update()
+			this.rootUpdate()
 		}
 		requestAnimationFrame(this.animate)
 	}
@@ -72,51 +73,13 @@ export class Root extends Container {
 		})
 	}
 
-	/**
-	 * @description  清除画布，全部清除或单个清除
-	 * @param {Node} node 节点信息  如果传入了某个节点，则清除当前节点的画布
-	 * @return {void}
-	 */
-	clear (node) {
-		let layers = this.getLayers(node);
-		if (node && !this.clearAll && layers.length > 0) {
+	rootUpdate () {
+		let layers = this.hasNodeLayers();
+		if (layers.length > 0) {
 			layers.forEach(layer => {
-				layer._clear()
-			})
-		} else if (this.clearAll && layers.length > 0) {
-			layers.forEach(layer => {
-				layer._clear()
+				layer.layerUpdate()
 			})
 		}
-	}
-
-	update () {
-		if (this.getLayers().length > 0) {
-			// this.updateLayer()
-			this.getLayers().forEach(layer => layer._clear())
-			this.updateShape()
-			// this.getLayers().forEach(layer => {
-			// 	// 图层存在，且图层存在自元素，并且自元素未shape, 图形元素
-			// 	if (layer.children && layer.children.length > 0) {
-			// 		let ctx = layer._getCtx()
-			// 		layer.children.forEach(shape => {
-			// 			// 如果开启动画，但没有对应的回调方法，则不更新
-			// 			if (shape.updateList.length > 0 && this.getRoot().looping) {
-			// 				shape._update(ctx)
-			// 			}
-			// 		})
-			// 	}
-			// })
-		}
-	}
-
-	updateShape() {
-		this.nodes.forEach(node => {
-			if(node.nodeType === 'shape') {
-				// this.getLayers().forEach(layer => layer._clear())
-				node.shapeUpdate()
-			}
-		})
 	}
 
 	stopClear () {
@@ -152,11 +115,14 @@ export class Root extends Container {
 	 */
 	getLayers (node) {
 		if (node) {
-			// todo 可能有点问题
-			return this.nodes.filter(n => n.nodeType === 'layer' && [node._parentId].includes(n._id))
+			return this.nodes.filter(n => n.nodeType === 'layer' && node.nodeType === 'shape' && [node._parentId].includes(n._id))
 		} else {
 			return this.nodes.filter(n => n.nodeType === 'layer')
 		}
+	}
+
+	hasNodeLayers () {
+		return this.nodes.filter(n => n.nodeType === 'layer' && n.children.length > 0)
 	}
 }
 

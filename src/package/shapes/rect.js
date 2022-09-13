@@ -1,12 +1,17 @@
 import {Shape} from '../shape';
 import globalConfig from '../config';
 
-export class Rect extends Shape{
+export class Rect extends Shape {
 	typeList = []
-	constructor(config = globalConfig) {
+
+	constructor (config = globalConfig) {
 		super(config)
 		this.setType('shape')
 		this.addType('rect', 'geo')
+	}
+
+	update () {
+		this.x += 10
 	}
 
 	/**
@@ -14,7 +19,7 @@ export class Rect extends Shape{
 	 * @param {Ctx} ctx discribe
 	 * @return {void}
 	 */
-	_draw () {
+	draw () {
 		let ctx = this.getCtx()
 		let {x, y, width, height} = this;
 		ctx[`${this.drawType}Rect`](x, y, width, height)

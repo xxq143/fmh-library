@@ -64,9 +64,8 @@ export class Background extends Img {
 		this.speed = this.defaultSpeed
 	}
 
-	_draw () {
-		let ctx = this.getCtx()
-		let {image, width, height} = this.loadList[0]
+	update () {
+		let {width} = this.loadList[0]
 		if (this.x < -width) {
 			this.x = width + this.x2 - this.speed
 		}
@@ -75,6 +74,11 @@ export class Background extends Img {
 		}
 		this.x = Math.floor(this.x - this.speed)
 		this.x2 = Math.floor(this.x2 - this.speed)
+	}
+
+	draw () {
+		let ctx = this.getCtx()
+		let {image, width, height} = this.loadList[0]
 		ctx.drawImage(image, this.x, 0, width, height)
 		ctx.drawImage(image, this.x2, 0, width, height)
 

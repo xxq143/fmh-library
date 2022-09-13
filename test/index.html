@@ -14,8 +14,6 @@
             height: 100vh;
             overflow: auto;
             display: flex;
-            /* align-items: center;
-            justify-content: center; */
         }
     </style>
 </head>
@@ -62,18 +60,13 @@
 
 	let player = new Player(sprite, input, {x: 50})
 	let player2 = new Player(sprite, input, {x: 400})
-	console.log(player, player2)
 	l.add(player)
 	l2.add(player2)
 	bgL.add(bg)
 	r.add(l, l2, bgL)
-	let speed = 10
 	Root.ob.on('allReady', (res) => {
-		bg.start(() => {
-			this.x--;
-			this.x2--
-		})
-		r.openAnimate()
+		console.log(res);
+		// r.openAnimate()
 	})
 
 

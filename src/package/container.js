@@ -22,12 +22,11 @@ export class Container extends Node {
 				n.setParentId(this._id);
 				this.children.push(n)
 			})
-			// utils.info(`${nodes.length > 1 ? 'nodes' : 'node'} was added`, nodes)
 			this.insertLayers()
 			this.flatNodes()
 			// 等待同步任务执行完成后，再执行更新操作
 			setTimeout(() => {
-				this.updateAllLayers(this.getRoot().getLayers())
+				this.updateAllLayers(this.getRoot().hasNodeLayers())
 			})
 		}
 	}
@@ -76,32 +75,32 @@ export class Container extends Node {
 	 * @param {}
 	 * @return {}
 	 */
-	_deepUpdate (node) {
-		if (node.children && node.children.length > 0) {
-			node.children.forEach(child => {
-				this._deepUpdate(child)
-			})
-		} else {
-			node.nodeDraw()
-			console.log('add')
-		}
-	}
+	// _deepUpdate (node) {
+	// 	if (node.children && node.children.length > 0) {
+	// 		node.children.forEach(child => {
+	// 			this._deepUpdate(child)
+	// 		})
+	// 	} else {
+	// 		node.nodeDraw()
+	// 		console.log('add')
+	// 	}
+	// }
 
 	updateAllLayers (layers) {
 		this.isAllReady().then(res => {
 			Root.ob.publish('allReady', res)
 			utils.info('加载完成')
 			layers.forEach(layer => {
-				layer.layerDraw()
+				layer.layerUpdate()
 			})
 		}).catch(err => {
-			console.log(err);
 			utils.error('加载异常', err)
+			Root.ob.publish('error', err)
 		})
 	}
 
 	isAllReady () {
-		return new Promise(async (resovle, reject) => {
+		return new Promise(async (resolve, reject) => {
 			let nodes = this.getRoot().nodes.filter(node => node.nodeType === 'shape' && node.typeList.includes('img'));
 			let len = nodes.length;
 			let list = [];
@@ -110,7 +109,7 @@ export class Container extends Node {
 				list.push(readyNode);
 			}
 			if (list.length === len) {
-				resovle(list)
+				resolve(list)
 			} else {
 				reject(list)
 			}
