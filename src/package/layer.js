@@ -21,9 +21,9 @@ export class Layer extends Container {
 		this.canvas = this.cvInstance.sceneCanvas;
 		this.ctx = new Ctx(this.canvas).ctx
 		this.initIndex()
-		this._getCtx = this._getCtx.bind(this)
-		this._clear = this._clear.bind(this)
-		this.layerDraw = this.layerDraw.bind(this)
+		// this._getCtx = this._getCtx.bind(this)
+		// this._clear = this._clear.bind(this)
+		// this.layerUpdate = this.layerUpdate.bind(this)
 	}
 
 	initIndex () {
@@ -122,12 +122,8 @@ export class Layer extends Container {
 
 	_clear (options = {x: 0, y: 0, width: this.cvWidth, height: this.cvHeight}) {
 		if (Math.floor(Root.clock.elapsedTime * 10) % this.clearSpeed === 0) {
-			// console.log(this.clearSpeed)
 			let {x, y, width, height} = options
 			this.ctx.clearRect(x, y, width, height)
-			// this.ctx.fillStyle = this.clearStyle
-			// this.ctx.save()
-			// this.ctx.fillRect(x, y, width, height)
 		}
 	}
 
@@ -149,9 +145,13 @@ export class Layer extends Container {
 	 * @param {Ctx} ctx 画笔
 	 * @return {void}
 	 */
-	layerDraw (ctx = this._getCtx()) {
+	layerUpdate () {
+		this._clear()
 		this.children.forEach(child => {
-			child.shapeDraw(ctx)
+			if (this.getRoot().looping) {
+				child.update()
+			}
+			child.draw()
 		})
 	}
 }

@@ -48,7 +48,7 @@ export class Clock {
 			this.oldTime = newTime
 			this.elapsedTime += diff
 		}
-		// console.log(diff)
+		console.log(diff)
 		return diff
 	}
 }

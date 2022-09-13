@@ -17,6 +17,7 @@ export class Node {
 		this.setAttr(config)
 		this.initDom(config)
 		this.setParentId = this.setParentId.bind(this)
+		this.getBg = this.getBg.bind(this)
 	}
 
 	/**
@@ -76,18 +77,6 @@ export class Node {
 
 	setParentId (id = null) {
 		this._parentId = id;
-	}
-
-	nodeDraw () {
-		if (this.nodeType === 'shape') {
-			let ctx = this.getCurrentCtx(this)
-			if (this.isDrawLayer) {
-				this.getRoot().getLayers(this)[0].layerDraw(ctx)
-			} else {
-				// 是否开启动画，都会进行渲染操作
-				this.shapeDraw(ctx)
-			}
-		}
 	}
 
 	getRoot () {

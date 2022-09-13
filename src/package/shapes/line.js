@@ -11,12 +11,15 @@ export class Line extends Shape {
 		this.pointList = config.pointList || []
 	}
 
+	update () {
+
+	}
 	/**
 	 * @description   覆盖父类方法
 	 * @param {Ctx} ctx discribe
 	 * @return {void}
 	 */
-	_draw () {
+	draw () {
 		let ctx = this.getCtx()
 		if (this.drawType === 'stroke') {
 			// 每次都重新绘制路径

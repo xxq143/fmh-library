@@ -8,6 +8,7 @@ import Observer from '../observer'
 
 export class Sprite extends Img {
 	spritePic = null
+
 	/**
 	 * @description 精灵图动画正渲染
 	 * @param {Input} input
@@ -20,6 +21,7 @@ export class Sprite extends Img {
 			this.input = input;
 			this.input.changeDomEl(Node.domEl)
 		}
+		this.addType('sprite')
 		this.createSpritePic(list);
 	}
 
@@ -43,19 +45,24 @@ export class Sprite extends Img {
 		})
 	}
 
-	ready() {
+	ready () {
 		return new Promise((resolve, reject) => {
 			Root.ob.on('ready', () => {
 				resolve(this)
 			})
 		})
 	}
+
+	update () {
+
+	}
+
 	/**
 	 * @description 处理内部精灵图的绘制
 	 * @param {Ctx} ctx discribe
 	 * @return {void}
 	 */
-	_draw () {
+	draw () {
 		let ctx = this.getCtx()
 		// 如果精灵图已存在
 		if (this.spritePic) {
@@ -116,12 +123,13 @@ export class Sprite extends Img {
 			maxY: this.cvHeight - height,
 		}
 	}
-	getItemImgSize() {
-        return {
-            width: Object.values(this.renderList)[0][0].dWidth,
-            height: Object.values(this.renderList)[0][0].dHeight
-        }
-    }
+
+	getItemImgSize () {
+		return {
+			width: Object.values(this.renderList)[0][0].dWidth,
+			height: Object.values(this.renderList)[0][0].dHeight,
+		}
+	}
 }
 
 export default Sprite

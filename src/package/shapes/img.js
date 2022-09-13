@@ -24,12 +24,16 @@ export class Img extends Shape {
 		}
 	}
 
+	update () {
+
+	}
+
 	/**
 	 * @description   覆盖父类方法
 	 * @param {Ctx} ctx discribe
 	 * @return {void}
 	 */
-	_draw () {
+	draw () {
 		let ctx = this.getCtx()
 		if (this.useAttrs) {
 			let {image, x, y, width, height, dx, dy, dWidth, dHeight} = this;
@@ -41,14 +45,13 @@ export class Img extends Shape {
 	}
 
 	/**
-	* @description 修改属性
-	* @param {String} key 实例属性名称
-	* @param {number|string} val 属性值
-	* @return {void}
-	*/
-	changeAttr(key, val) {
+	 * @description 修改属性
+	 * @param {String} key 实例属性名称
+	 * @param {number|string} val 属性值
+	 * @return {void}
+	 */
+	changeAttr (key, val) {
 		this[key] = val
-		this.drawChange()
 	}
 }
 
